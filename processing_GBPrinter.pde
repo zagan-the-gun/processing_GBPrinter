@@ -75,7 +75,9 @@ void mousePressed(){
   int yPos = 0;
   int i = 0;
   int j = 0;
+  int j2 = 1;
   byte b = 0;
+  byte b2 = 0;
 
   for(yPos = 0; yPos < height; yPos = yPos + 8){
     for(xPos = 0; xPos < width; xPos = xPos + 8){
@@ -88,9 +90,13 @@ void mousePressed(){
         if(row0.length > j){
           b = byte(row0[(j)]);
         }
+        if(row0.length > j2){
+          b2 = byte(row0[(j2)]);
+        }
         i = 0;
         //j++;
         j = j + 2;
+        j2 = j2 + 2;
         for(int x = (7 + xPos); x <= width && x >= xPos; x--){
         //for(int x = xPos; x < (xPos + 8); x++){
 
@@ -107,9 +113,16 @@ void mousePressed(){
             //println( b >> i & 1);
           //}
 
-          if((b >> i & 1) == 1){
+          if((b2 >> i & 1) == 1){
+            stroke(#7d7d7d);
             point(x, y);
           }
+
+          if((b >> i & 1) == 1){
+            stroke(#000000);
+            point(x, y);
+          }
+
           //point(x, y);
 
           //print(unhex(row0[i]));
