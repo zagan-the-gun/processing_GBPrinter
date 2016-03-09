@@ -31,46 +31,52 @@ String[] row0 = {
 //};
 
 void setup() {
-  size(160, 377);
+  //size(160, 377);
+  size(160, 160);
   background(255);
 }
 
 void draw(){
+  
   //img = loadImage("box.bmp");
   //image(img, 0, 0);
   loadPixels();
+  stroke(#ff0000);
+  point(0, 0);
+  point((width - 1), 0);
+  point(0, (height - 1));
+  point((width - 1), (height - 1));
+  stroke(#000000);
 }
 
 void mousePressed(){
-  int xPos = 8;
-  int yPos = 8;
-  int i = 0;
+  int xPos = 0;
+  int yPos = 0;
+  //int i = 0;
 
-  for(int w = width + height; w > 0 ; w--){
-   //println(" w: " + w);
-   for(int y = (0 + yPos); y < height && y > 0; y--){
-     for(int x = (0 + xPos); x < width && x > 0; x--){
-       //print(unhex(row0[i]));
-       point(x, y);
-       if(i % 3 == 0){
-         
-       } else {
-         
-       }
-       //if((unhex(row0[i]) >> i & 1) == 1){
-       //  line(x, y, x, y);
-       //}
-       i++;
-     }
-     xPos = xPos + 8;
-     if(xPos > width){
-       xPos = 8;
-     }
-   }
-   yPos = yPos + 8;
-   if(yPos > height){
-     yPos = 8;
-   }
+  for(yPos = 0; yPos < height ; yPos = yPos + 8){
+    for(xPos = 0; xPos < width; xPos = xPos + 8){
+
+      for(int y = (7 + yPos); y <= height && y >= yPos; y--){
+        //println(" y: " + y);
+        for(int x = (7 + xPos); x <= width && x >= xPos; x--){
+          //println(" x: " + x);
+          //print(unhex(row0[i]));
+          point(x, y);
+          //if(i % 3 == 0){
+  
+          //} else {
+  
+          //}
+          //if((unhex(row0[i]) >> i & 1) == 1){
+          //  line(x, y, x, y);
+          //}
+          //i++;
+        }
+      }
+    //println("xPos: " + xPos);
+    }
+    //println("yPos: " + yPos + " xPos: " + xPos);
   }
 
 
