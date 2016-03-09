@@ -38,7 +38,7 @@ void setup() {
 void draw(){
   //img = loadImage("box.bmp");
   //image(img, 0, 0);
-  //loadPixels();
+  loadPixels();
 }
 
 void mousePressed(){
@@ -47,24 +47,30 @@ void mousePressed(){
   int i = 0;
 
   for(int w = width + height; w > 0 ; w--){
-    println(" w: " + w);
-    for(int y = (0 + yPos); y > (yPos-8); y--){
-      for(int x = (0 + xPos); x > (xPos-8); x--){
-        print(unhex(row0[i]));
-        //if((unhex(row0[i]) >> i & 1) == 1){
-        //  line(x, y, x, y);
-        //}
-        i++;
-      }
-      xPos = xPos + 8;
-      if(xPos > width){
-        xPos = 8;
-      }
-    }
-    yPos = yPos + 8;
-    if(yPos > height){
-      yPos = 8;
-    }
+   //println(" w: " + w);
+   for(int y = (0 + yPos); y < height && y > 0; y--){
+     for(int x = (0 + xPos); x < width && x > 0; x--){
+       //print(unhex(row0[i]));
+       point(x, y);
+       if(i % 3 == 0){
+         
+       } else {
+         
+       }
+       //if((unhex(row0[i]) >> i & 1) == 1){
+       //  line(x, y, x, y);
+       //}
+       i++;
+     }
+     xPos = xPos + 8;
+     if(xPos > width){
+       xPos = 8;
+     }
+   }
+   yPos = yPos + 8;
+   if(yPos > height){
+     yPos = 8;
+   }
   }
 
 
@@ -73,27 +79,28 @@ void mousePressed(){
   //int j = 1;
   //println("const char row0[640] PROGMEM = {");
   //for(int y = 0; y < height; y++){
-  //  for(int x = 0; x < width; x++){
-  //    if(i >= 0){
-  //      color c = pixels[y*width + x];
-  //      if(c == color(0)){
-  //        pixelByte |= (1 << i);
-  //      }else{
-  //        pixelByte &= ~(1 << i);
-  //      }
-  //     i--;
-  //    }else{
-  //      print("0x" + hex(pixelByte) + ", ");
-  //      i = 7;
-  //      if(j >= 640){
-  //        println();
-  //        println("};");
-  //        println("const char row0[640] PROGMEM = {");
-  //        j = 0;
-  //      }
-  //      j++;
-  //    }
-  //  }
+  // for(int x = 0; x < width; x++){
+  //   //point(x, y);
+  //   if(i >= 0){
+  //     color c = pixels[y*width + x];
+  //     if(c == color(0)){
+  //       pixelByte |= (1 << i);
+  //     }else{
+  //       pixelByte &= ~(1 << i);
+  //     }
+  //    i--;
+  //   }else{
+  //     print("0x" + hex(pixelByte) + ", ");
+  //     i = 7;
+  //     if(j >= 640){
+  //       println();
+  //       println("};");
+  //       println("const char row0[640] PROGMEM = {");
+  //       j = 0;
+  //     }
+  //     j++;
+  //   }
+  // }
   //}
   //println("};");
 }
