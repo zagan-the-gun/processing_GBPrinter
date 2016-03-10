@@ -42,9 +42,7 @@ int[] row0 = {
 //1001 0001
 //0110 1110
 
-int[] row1 = {
-  0xf0, 0x0f, 0x00, 0x00
-};
+int[] row1 = new int[];
 
 void setup() {
   size(159, 376);
@@ -78,6 +76,7 @@ void mousePressed(){
   int j2 = 1;
   byte b = 0;
   byte b2 = 0;
+  int rowCount = 0;
 
   for(yPos = 0; yPos < height; yPos = yPos + 8){
     for(xPos = 0; xPos < width; xPos = xPos + 8){
@@ -94,24 +93,10 @@ void mousePressed(){
           b2 = byte(row0[(j2)]);
         }
         i = 0;
-        //j++;
         j = j + 2;
         j2 = j2 + 2;
         for(int x = (7 + xPos); x <= width && x >= xPos; x--){
         //for(int x = xPos; x < (xPos + 8); x++){
-
-          //if(((y*width) + x) > (width * height)){
-          //  color c = pixels[y*width + x];
-          //  if(c == color(0)) {
-          //    pixelByte |= (1 << i);
-          //  } else {
-          //    pixelByte &= ~(1 << i);
-          //  }
-          //}
-
-          //for(int j = 0; j <= 7; j++){
-            //println( b >> i & 1);
-          //}
 
           if((b2 >> i & 1) == 1){
             stroke(#7d7d7d);
@@ -123,15 +108,21 @@ void mousePressed(){
             point(x, y);
           }
 
+          color c = pixels[y*width + x];
+          if(c == color(0)){
+            row1[rowCount] |= (1 << i);
+            row1[(rowCount + 1)] = 0x00;
+          }else{
+            row1[rowCount] &= ~(1 << i);
+            row1[(rowCount + 1)] = 0x00;
+          }
+
           //point(x, y);
 
-          //print(unhex(row0[i]));
-          //point(x, y);
-          //if((unhex(row0[i]) >> i & 1) == 1){
-          //  line(x, y, x, y);
-          //}
           i++;
         }
+        print(hex(row1[rowCount]));
+        rowCount++;
         //print("0x" + hex(pixelByte) + ", ");
       }
     //println("xPos: " + xPos);
@@ -154,28 +145,28 @@ void mousePressed(){
   //int j = 1;
   //println("const char row0[640] PROGMEM = {");
   //for(int y = 0; y < height; y++){
-  // for(int x = 0; x < width; x++){
-  //   //point(x, y);
-  //   if(i >= 0){
-  //     color c = pixels[y*width + x];
-  //     if(c == color(0)){
-  //       pixelByte |= (1 << i);
-  //     }else{
-  //       pixelByte &= ~(1 << i);
-  //     }
-  //    i--;
-  //   }else{
-  //     print("0x" + hex(pixelByte) + ", ");
-  //     i = 7;
-  //     if(j >= 640){
-  //       println();
-  //       println("};");
-  //       println("const char row0[640] PROGMEM = {");
-  //       j = 0;
-  //     }
-  //     j++;
-  //   }
-  // }
+  //for(int x = 0; x < width; x++){
+  //  //point(x, y);
+  //  if(i >= 0){
+  //    color c = pixels[y*width + x];
+  //    if(c == color(0)){
+  //      pixelByte |= (1 << i);
+  //    }else{
+  //      pixelByte &= ~(1 << i);
+  //    }
+  //   i--;
+  //  }else{
+  //    print("0x" + hex(pixelByte) + ", ");
+  //    i = 7;
+  //    if(j >= 640){
+  //      println();
+  //      println("};");
+  //      println("const char row0[640] PROGMEM = {");
+  //      j = 0;
+  //    }
+  //    j++;
+  //  }
+  //}
   //}
   //println("};");
 }
