@@ -41,7 +41,7 @@ void draw(){
   //img = loadImage("5Bh.jpg");
   //img = loadImage("5Bh-s.jpg");
   //img = loadImage("text.png");
-  
+
   img.filter(GRAY);
 
   image(imgFile, 161, 0);
