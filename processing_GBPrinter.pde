@@ -1,53 +1,54 @@
 import processing.serial.*;
 
 PImage img;
-PImage imgRotation;
 PImage imgFile;
+PImage imgRotation;
+PImage imgSize;
+PImage imgScissors;
+PImage imgGbprinter;
 Serial serial;
 
-byte pixelByte = 0;
+//byte pixelByte = 0;
 int[] row1 = new int[640];
 int inByte = 0;
 int loop = 0;
 int imgWidth = 159;
+int windowSizeY = 165;
+int imageX = 0;
+int imageY = 0 ;
+int imageWidth;
+int imageHeight;
+int rotateRadians = 0;
 
 void setup() {
-  //size(159, 376); //logs.bmp
-  //size(159, 226); //160.bmp
-  size(194, 198); //2Bc.bmp
-  //size(159, 159); //gradation.bmp
-  //size(159, 159); //gradation.bmp
-  //size(159, 216); //5Bh.jpg
-  //size(159, 159); //text.bmp
-
+  size(194, 165);
+  img = loadImage("2Bc2.bmp");
+  imageWidth = img.width;
+  imageHeight = img.height;
   //serial = new Serial( this, Serial.list()[0], 9600 );
   serial = new Serial( this, Serial.list()[0], 115200 );
   background(255);
-  //serial.write('h'); 
+
   //frameRate(1);
+  image(img, 0, 0);
+  img.filter(GRAY);
 }
 
 void draw(){
-  imgRotation = loadImage("rotation.png");
   imgFile = loadImage("file.png");
+  imgRotation = loadImage("rotation.png");
+  imgSize = loadImage("size.png");
+  imgScissors = loadImage("scissors.png");
+  imgGbprinter = loadImage("gbprinter.png");
 
-  //img = loadImage("logos.bmp");
-  //img = loadImage("box.bmp");
-  //img = loadImage("160.bmp");
-  img = loadImage("2Bc2.bmp");
-  //img = loadImage("2Bc.bmp");
-  //img = loadImage("gradation.bmp");
-  //img = loadImage("gradation-s.bmp");
-  //img = loadImage("5Bh.jpg");
-  //img = loadImage("5Bh-s.jpg");
-  //img = loadImage("text.png");
-
-  img.filter(GRAY);
+  //image(img, 0, 0);
+  //img.filter(GRAY);
 
   image(imgFile, 161, 0);
   image(imgRotation, 161, 33);
-
-  image(img, 0, 0);
+  image(imgSize, 161, 66);
+  image(imgScissors, 161, 99);
+  image(imgGbprinter, 161, 132);
 
   loadPixels();
   stroke(#ff0000);
@@ -60,11 +61,78 @@ void draw(){
 
 void mousePressed(){
   if(mouseX < width && mouseX > 161){
+    // file
     if(mouseY < 32){
+      selectInput("Select a file to process:", "viewImage");
+    // rotation
+    } else if(mouseY > 33 && mouseY < 64) {
+      if(rotateRadians <= 360){
+        rotateRadians = rotateRadians + 90;
+      } else {
+        rotateRadians = 0;
+      }
+      imageMode(CENTER);
+      translate(imageX+imageWidth/2, imageY+imageHeight/2);
+      rotate(radians(rotateRadians));
+      image(img, 0, 0, imageWidth, imageHeight);
+      imageMode(CORNER);
+      translate(-(imageX+imageWidth/2), -(imageY+imageHeight/2));
+    // size down
+    } else if(mouseY > 66 && mouseY < 81) {
+      if(windowSizeY > 165){
+        windowSizeY = windowSizeY - 8;
+        surface.setSize(194, windowSizeY);
+      }
+    // size up
+    } else if(mouseY > 84 && mouseY < 97) {
+      if(windowSizeY < 640){
+        windowSizeY = windowSizeY + 8;
+        surface.setSize(194, windowSizeY);
+      } else {
+        surface.setSize(194, 640);
+      }
+    // scissors
+    } else if(mouseY > 99 && mouseY < 130) {
+      
+    // gbprinter
+    } else if(mouseY > 132 && mouseY < 165) {
       serial.write('h'); 
       gbPrint();
     }
   }
+}
+
+void viewImage(File selection){
+  if (selection == null) {
+    println("Window was closed or the user hit cancel.");
+  } else {
+    String path = selection.getAbsolutePath();
+    img = loadImage("" + path);
+    imageWidth = img.width;
+    imageHeight = img.height;
+
+    background(255);
+    image(img, 0, 0);
+    img.filter(GRAY);
+  }
+}
+
+void mouseWheel(MouseEvent event){
+  float f = event.getAmount();
+  if(f < 0){
+    imageWidth++;
+    imageHeight++;
+    image(img, imageX, imageY, imageWidth, imageHeight);
+  } else {
+    imageWidth--;
+    imageHeight--;
+    image(img, imageY, 100, imageWidth, imageHeight);
+  }
+}
+
+void mouseDragged(){
+  imageX = mouseX;
+  imageY = mouseY;
 }
 
 void gbPrint(){
