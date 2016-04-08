@@ -35,14 +35,23 @@ void setup() {
 }
 
 void draw(){
+  background(255);
+
   imgFile = loadImage("file.png");
   imgRotation = loadImage("rotation.png");
   imgSize = loadImage("size.png");
   imgScissors = loadImage("scissors.png");
   imgGbprinter = loadImage("gbprinter.png");
 
-  //image(img, 0, 0);
-  //img.filter(GRAY);
+  imageMode(CENTER);
+  translate(imageX+imageWidth/2, imageY+imageHeight/2);
+  rotate(radians(rotateRadians));
+  image(img, imageX, imageY, imageWidth, imageHeight);
+  //image(img, imageX, imageY);
+  img.filter(GRAY);
+  rotate(radians(-rotateRadians));
+  translate(-(imageX+imageWidth/2), -(imageY+imageHeight/2));
+  imageMode(CORNER);
 
   image(imgFile, 161, 0);
   image(imgRotation, 161, 33);
@@ -71,12 +80,6 @@ void mousePressed(){
       } else {
         rotateRadians = 0;
       }
-      imageMode(CENTER);
-      translate(imageX+imageWidth/2, imageY+imageHeight/2);
-      rotate(radians(rotateRadians));
-      image(img, 0, 0, imageWidth, imageHeight);
-      imageMode(CORNER);
-      translate(-(imageX+imageWidth/2), -(imageY+imageHeight/2));
     // size down
     } else if(mouseY > 66 && mouseY < 81) {
       if(windowSizeY > 165){
@@ -111,9 +114,6 @@ void viewImage(File selection){
     imageWidth = img.width;
     imageHeight = img.height;
 
-    background(255);
-    image(img, 0, 0);
-    img.filter(GRAY);
   }
 }
 
@@ -122,12 +122,12 @@ void mouseWheel(MouseEvent event){
   if(f < 0){
     imageWidth++;
     imageHeight++;
-    image(img, imageX, imageY, imageWidth, imageHeight);
+    
   } else {
     imageWidth--;
     imageHeight--;
-    image(img, imageY, 100, imageWidth, imageHeight);
   }
+  //img.resize(imageWidth, 0);
 }
 
 void mouseDragged(){
