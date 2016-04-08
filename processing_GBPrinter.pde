@@ -12,26 +12,36 @@ Serial serial;
 int[] row1 = new int[640];
 int inByte = 0;
 int loop = 0;
-int imgWidth = 159;
-int windowSizeY = 165;
+int imgWidth = 160;
+int printSizeY = 10;
+int windowSizeY = 198;
 int imageX = 1;
 int imageY = 1;
 int imageWidth;
 int imageHeight;
 int rotateRadians = 0;
 
+int gaugePos1 = 178;
+int gaugePos2 = 95;
+int gaugePos3 = 20;
+
+float brightness1;
+float brightness2;
+float brightness3;
+float brightness4;
+
+
 void setup() {
-  //size(194, 165);
-  size(198, 201);
   img = loadImage("gradation-s.bmp");
   imageWidth = img.width;
   imageHeight = img.height;
+  size(198, 198);
   //serial = new Serial( this, Serial.list()[0], 9600 );
   serial = new Serial( this, Serial.list()[0], 115200 );
   background(255);
 
   //frameRate(1);
-  image(img, 1, 1);
+  image(img, imageX, imageY);
   img.filter(GRAY);
 }
 
@@ -50,30 +60,42 @@ void draw(){
   image(img, imageX, imageY, imageWidth, imageHeight);
   //image(img, imageX, imageY);
   img.filter(GRAY);
+  img.filter(POSTERIZE, 4);
   rotate(radians(-rotateRadians));
   translate(-(imageX+imageWidth/2), -(imageY+imageHeight/2));
   imageMode(CORNER);
 
+  loadPixels();
+
+  // print area
+  stroke(#ff0000);
+  line(0,0,163,0);
+  line(0,printSizeY,163,printSizeY);
+  line(0,0,0,printSizeY);
+  line(163,0,163,printSizeY);
+  // slider area
+  noStroke();
+  rect(0,(windowSizeY - 35),197,35);
+  //image(imgSize, 165,(windowSizeY - 33));
+  stroke(#000000);
+  // button
   image(imgFile, 165, 0);
   image(imgRotation, 165, 33);
   image(imgSize, 165, 66);
   image(imgScissors, 165, 99);
   image(imgGbprinter, 165, 132);
 
-  loadPixels();
-
-  stroke(#ff0000);
-  //rect(0,0,160,(windowSizeY - 34));
-  line(0,0,163,0);
-  line(0,(windowSizeY - 34),163,(windowSizeY - 34));
-  line(0,0,0,(windowSizeY - 34));
-  line(163,0,163,(windowSizeY - 34));
-  //point(0, 0);
-  //point((width - 1), 0);
-  //point(0, (height - 1));
-  //point((width - 1), (height - 1));
-  stroke(#000000);
-
+  // line
+  //strokeWeight(2);
+  line(10, (windowSizeY - 18), (width - 10), (windowSizeY - 18));
+  // slider
+  fill(255);
+  triangle(gaugePos1, (windowSizeY - 17), (gaugePos1 - 5), (windowSizeY - 5), (gaugePos1 + 5), (windowSizeY - 5));
+  fill(85);
+  triangle(gaugePos2, (windowSizeY - 17), (gaugePos2 - 5), (windowSizeY - 5), (gaugePos2 + 5), (windowSizeY - 5));
+  fill(0);
+  triangle(gaugePos3, (windowSizeY - 17), (gaugePos3 - 5), (windowSizeY - 5), (gaugePos3 + 5), (windowSizeY - 5));
+  fill(#ffffff);
 }
 
 void mousePressed(){
@@ -90,17 +112,21 @@ void mousePressed(){
       }
     // size down
     } else if(mouseY > 66 && mouseY < 81) {
-      if(windowSizeY > 165){
+      if(printSizeY > 10){
+        printSizeY = printSizeY - 8;
+      }
+      if(windowSizeY > 201){
         windowSizeY = windowSizeY - 8;
-        surface.setSize(194, windowSizeY);
+        surface.setSize(198, windowSizeY);
       }
     // size up
     } else if(mouseY > 84 && mouseY < 97) {
-      if(windowSizeY < 640){
+      if(printSizeY < 640){
+        printSizeY = printSizeY + 8;
+      }
+      if(windowSizeY < 640 && (windowSizeY - 34) < (printSizeY )){
         windowSizeY = windowSizeY + 8;
-        surface.setSize(194, windowSizeY);
-      } else {
-        surface.setSize(194, 640);
+        surface.setSize(198, windowSizeY);
       }
     // scissors
     } else if(mouseY > 99 && mouseY < 130) {
@@ -118,7 +144,15 @@ void viewImage(File selection){
     println("Window was closed or the user hit cancel.");
   } else {
     String path = selection.getAbsolutePath();
+
     img = loadImage("" + path);
+
+    imageX = 1;
+    imageY = 1;
+    imageWidth = 0;
+    imageHeight = 0;
+
+    rotateRadians = 0;
     imageWidth = img.width;
     imageHeight = img.height;
 
@@ -130,8 +164,7 @@ void mouseWheel(MouseEvent event){
   if(f < 0){
     imageWidth++;
     imageHeight++;
-    
-  } else {
+      } else {
     imageWidth--;
     imageHeight--;
   }
@@ -139,8 +172,36 @@ void mouseWheel(MouseEvent event){
 }
 
 void mouseDragged(){
-  imageX = mouseX;
-  imageY = mouseY;
+  if(printSizeY > mouseY){
+    imageX = mouseX;
+    imageY = mouseY;
+  } else if ((windowSizeY - 35) < mouseY) {
+    if((gaugePos1 - 5) < mouseX && (gaugePos1 + 5) > mouseX){
+      if(gaugePos1 < mouseX && (width - 9) > mouseX){
+        gaugePos1 = mouseX;
+      } else if(gaugePos1 > mouseX && 9 < mouseX){
+        gaugePos1 = mouseX;
+      }
+      brightness1 = ((256/(width - 19.0))*(gaugePos1 - 10));
+      println("((256/(width - 10.0)) " + (256/(width - 10.0)));
+      println("gaugePos1 " + gaugePos1);
+      println("brightness1 " + brightness1);
+    } else if((gaugePos2 - 5) < mouseX && (gaugePos2 + 5) > mouseX){
+      if(gaugePos2 < mouseX && (width - 9) > mouseX){
+        gaugePos2 = mouseX;
+      } else if(gaugePos2 > mouseX && 9 < mouseX){
+        gaugePos2 = mouseX;
+      }
+      brightness2 = ((256/(width - 19.0))*(gaugePos2 - 10));
+    } else if((gaugePos3 - 5) < mouseX && (gaugePos3 + 5) > mouseX){
+      if(gaugePos3 < mouseX && (width - 9) > mouseX){
+        gaugePos3 = mouseX;
+      } else if(gaugePos3 > mouseX && 9 < mouseX){
+        gaugePos3 = mouseX;
+      }
+      brightness3 = ((256/(width - 19.0))*(gaugePos3 - 10));
+    }
+  }
 }
 
 void gbPrint(){
@@ -161,9 +222,9 @@ void gbPrint(){
 
   //println("const char row0[640] PROGMEM = {");
 
-  for(yPos = 0; yPos < height; yPos = yPos + 8){
+  for(yPos = 1; yPos < printSizeY; yPos = yPos + 8){
     //for(xPos = 0; xPos < width; xPos = xPos + 8){
-    for(xPos = 0; xPos < imgWidth; xPos = xPos + 8){
+    for(xPos = 1; xPos < imgWidth; xPos = xPos + 8){
 
       for(int y = yPos; y < (yPos + 8); y++){
         i = 0;
@@ -172,7 +233,7 @@ void gbPrint(){
         //for(int x = (7 + xPos); x <= width && x >= xPos; x--){
         for(int x = (7 + xPos); x <= imgWidth && x >= xPos; x--){
           //if((y*width + x) < (width * height)){
-          if((y*imgWidth + x) < (imgWidth * height)){
+          if((y*imgWidth + x) < (imgWidth * printSizeY)){
             color c = pixels[y*width + x];
             //print(int(brightness(c)) + " ");
             //print((c) + " ");
