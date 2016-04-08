@@ -14,15 +14,16 @@ int inByte = 0;
 int loop = 0;
 int imgWidth = 159;
 int windowSizeY = 165;
-int imageX = 0;
-int imageY = 0 ;
+int imageX = 1;
+int imageY = 1;
 int imageWidth;
 int imageHeight;
 int rotateRadians = 0;
 
 void setup() {
-  size(194, 165);
-  img = loadImage("2Bc2.bmp");
+  //size(194, 165);
+  size(198, 201);
+  img = loadImage("gradation-s.bmp");
   imageWidth = img.width;
   imageHeight = img.height;
   //serial = new Serial( this, Serial.list()[0], 9600 );
@@ -30,7 +31,7 @@ void setup() {
   background(255);
 
   //frameRate(1);
-  image(img, 0, 0);
+  image(img, 1, 1);
   img.filter(GRAY);
 }
 
@@ -53,19 +54,26 @@ void draw(){
   translate(-(imageX+imageWidth/2), -(imageY+imageHeight/2));
   imageMode(CORNER);
 
-  image(imgFile, 161, 0);
-  image(imgRotation, 161, 33);
-  image(imgSize, 161, 66);
-  image(imgScissors, 161, 99);
-  image(imgGbprinter, 161, 132);
+  image(imgFile, 165, 0);
+  image(imgRotation, 165, 33);
+  image(imgSize, 165, 66);
+  image(imgScissors, 165, 99);
+  image(imgGbprinter, 165, 132);
 
   loadPixels();
+
   stroke(#ff0000);
-  point(0, 0);
-  point((width - 1), 0);
-  point(0, (height - 1));
-  point((width - 1), (height - 1));
+  //rect(0,0,160,(windowSizeY - 34));
+  line(0,0,163,0);
+  line(0,(windowSizeY - 34),163,(windowSizeY - 34));
+  line(0,0,0,(windowSizeY - 34));
+  line(163,0,163,(windowSizeY - 34));
+  //point(0, 0);
+  //point((width - 1), 0);
+  //point(0, (height - 1));
+  //point((width - 1), (height - 1));
   stroke(#000000);
+
 }
 
 void mousePressed(){
