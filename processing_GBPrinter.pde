@@ -36,8 +36,12 @@ void setup() {
   imageWidth = img.width;
   imageHeight = img.height;
   size(198, 198);
+  // Win
   //serial = new Serial( this, Serial.list()[0], 9600 );
-  serial = new Serial( this, Serial.list()[0], 115200 );
+  //serial = new Serial( this, Serial.list()[0], 115200 );
+  // OSX
+  serial = new Serial( this, "/dev/ttyp0", 115200 );
+
   background(255);
 
   //frameRate(1);
@@ -58,7 +62,6 @@ void draw(){
   translate(imageX+imageWidth/2, imageY+imageHeight/2);
   rotate(radians(rotateRadians));
   image(img, imageX, imageY, imageWidth, imageHeight);
-  //image(img, imageX, imageY);
   img.filter(GRAY);
   img.filter(POSTERIZE, 4);
   rotate(radians(-rotateRadians));
@@ -161,20 +164,27 @@ void viewImage(File selection){
 
 void mouseWheel(MouseEvent event){
   float f = event.getAmount();
+
   if(f < 0){
-    imageWidth++;
-    imageHeight++;
+    //imageWidth++;
+    //imageHeight++;
+    imageWidth = imageWidth + int(imageWidth/(map(f, 0, 10, 100, 200)));
+    imageHeight = imageHeight + int(imageHeight/(map(f, 0, 10, 100, 200)));
       } else {
-    imageWidth--;
-    imageHeight--;
+        if(imageWidth > 160 && imageHeight > 160){
+    //imageWidth--;
+    //imageHeight--;
+    imageWidth = imageWidth - int(imageWidth/(map(f, 0, 10, 100, 200)));
+    imageHeight = imageHeight - int(imageHeight/(map(f, 0, 10, 100, 200)));
+        }
   }
   //img.resize(imageWidth, 0);
 }
 
 void mouseDragged(){
   if(printSizeY > mouseY){
-    imageX = mouseX;
-    imageY = mouseY;
+    imageX = imageX + (mouseX - pmouseX);
+    imageY = imageY + (mouseY - pmouseY);
   } else if ((windowSizeY - 35) < mouseY) {
     if((gaugePos1 - 5) < mouseX && (gaugePos1 + 5) > mouseX){
       if(gaugePos1 < mouseX && (width - 9) > mouseX){
